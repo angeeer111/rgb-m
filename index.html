@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Маршрут и навигация</title>
+  <link rel="stylesheet" href="./css/index.css" />
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <div class="page">
+    <div class="route-block">
+      <div class="hero" id="hero">
+        <div class="big-letters" aria-hidden="true">
+          <span class="l1">М</span>
+          <span class="l2">А</span>
+          <span class="l3">Р</span>
+          <span class="l4">Ш</span>
+          <span class="l5">Р</span>
+          <span class="l6">У</span>
+          <span class="l7">Т</span>
+        </div>
+
+        <div class="note n1">(карта)</div>
+        <div class="note n2">(слои)</div>
+        <div class="note n3">(результат)</div>
+        <div class="note n4">(добыча)</div>
+
+        <div class="flow f1"></div>
+        <div class="flow f2"></div>
+        <div class="flow f3"></div>
+
+        <div class="guide-mobile route-guide-mobile">
+          <div class="guide-mobile-line">
+            <div class="guide-mobile-label">(карта)</div>
+            <div class="guide-mobile-arrow"></div>
+            <div class="guide-mobile-label">(слои)</div>
+            <div class="guide-mobile-arrow"></div>
+          </div>
+          <div class="guide-mobile-line">
+            <div class="guide-mobile-label">(результат)</div>
+            <div class="guide-mobile-arrow"></div>
+            <div class="guide-mobile-label">(добыча)</div>
+          </div>
+        </div>
+
+        <div class="metric m1">
+          <span class="metric-letter">R</span>
+          <span class="metric-value" id="rValue">{ 0</span>
+        </div>
+
+        <div class="metric m2">
+          <span class="metric-letter">G</span>
+          <span class="metric-value" id="gValue">{ 16</span>
+        </div>
+
+        <div class="metric m3">
+          <span class="metric-letter">B</span>
+          <span class="metric-value" id="bValue">{ 255</span>
+        </div>
+      </div>
+
+      <div class="band" id="band">
+        <div class="spectrum" id="spectrum"></div>
+        <div class="marker" id="marker"></div>
+        <input class="slider-hitbox" id="slider" type="range" min="0" max="1000" value="500" />
+      </div>
+    </div>
+
+    <section class="navigation-section" aria-label="Навигация">
+      <div class="navigation-title" aria-hidden="true">
+        <span>(</span>
+        <span>н</span>
+        <span>а</span>
+        <span>в</span>
+        <span>и</span>
+        <span>г</span>
+        <span>а</span>
+        <span>ц</span>
+        <span>и</span>
+        <span>я</span>
+        <span>)</span>
+      </div>
+
+      <div class="navigation-guide">
+        <div class="guide-label">(перетащи)</div>
+        <div class="guide-arrow"></div>
+        <div class="guide-label center">(видоискатель)</div>
+        <div class="guide-arrow"></div>
+        <div class="guide-label center">(найди)</div>
+        <div class="guide-arrow"></div>
+        <div class="guide-label right">(знак)</div>
+      </div>
+
+      <div class="guide-mobile navigation-guide-mobile">
+        <div class="guide-mobile-line">
+          <div class="guide-mobile-label">(перетащи)</div>
+          <div class="guide-mobile-arrow"></div>
+          <div class="guide-mobile-label">(видоискатель)</div>
+        </div>
+        <div class="guide-mobile-line">
+          <div class="guide-mobile-arrow"></div>
+          <div class="guide-mobile-label">(найди)</div>
+          <div class="guide-mobile-arrow"></div>
+          <div class="guide-mobile-label">(знак)</div>
+        </div>
+      </div>
+
+      <div class="navigation-map" id="navigationMap">
+        <div class="map-layer map-layer-bottom" aria-hidden="true">
+          <div class="map-hidden-scene">
+            <div class="map-sign"></div>
+            <div class="map-sign-pulse"></div>
+          </div>
+        </div>
+
+        <div class="map-layer map-layer-top"></div>
+
+        <div class="map-overlay" aria-hidden="true">
+          <div class="map-code index-badge"><span class="index-mark"><svg class="index-hash" viewBox="0 0 67 76" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.831 73.511L28.2968 52.364H26.4842L17.0184 73.511H12.789L22.2548 52.364H0.000120166L0.80572 48.4367H23.9667L32.929 28.3974H10.5736L11.3792 24.4701H34.7416L44.8116 1.91329H49.041L38.971 24.4701H40.7836L50.8536 1.91329H55.083L45.013 24.4701H66.8649L66.16 28.3974H43.2004L34.2381 48.4367H56.2914L55.5865 52.364H32.5262L23.0604 73.511H18.831ZM28.1961 48.4367H30.0087L38.971 28.3974H37.1584L28.1961 48.4367Z" fill="currentColor"/></svg></span><span class="index-digits">01</span></div>
+          <div class="map-top">{с}</div>
+          <div class="map-side map-left">{з}</div>
+          <div class="map-side map-right">{в}</div>
+          <div class="map-bottom">{ю}</div>
+        </div>
+
+        <div class="viewfinder" id="viewfinder" aria-label="Видоискатель" role="img">
+          <div class="viewfinder-core" id="viewfinderCore">
+            <div class="viewfinder-reveal">
+              <div class="map-hidden-scene viewfinder-scene" id="viewfinderScene">
+                <div class="map-sign"></div>
+                <div class="map-sign-pulse"></div>
+              </div>
+            </div>
+          </div>
+
+          <svg class="viewfinder-svg" viewBox="0 0 266 202" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="none">
+            <path d="M43.073 1.34326H1.34326V199.782H43.073" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M117.209 181.136L80.141 181.136L43.0726 181.136L43.0726 165.599" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M147.841 181.136L184.91 181.136L221.978 181.136L221.978 165.599" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M117.209 21.7644L80.141 21.7644L43.0726 21.7644L43.0726 37.3021" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M147.841 21.7644L184.91 21.7644L221.978 21.7644L221.978 37.3021" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M221.978 1.34326H263.708V199.782H221.978" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M132.746 29.7554L132.746 171.814" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M61.7183 100.787L203.777 100.787" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M86.1333 84.8027V56.391" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M71.9302 70.5972L100.342 70.5972" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M172.256 84.8027V56.391" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M158.054 70.5972L186.465 70.5972" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M172.256 154.057V125.645" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M158.054 139.851L186.465 139.851" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M86.1333 154.057V125.645" stroke="#0009FF" stroke-width="2.68633"/>
+            <path d="M71.9302 139.851L100.342 139.851" stroke="#0009FF" stroke-width="2.68633"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="coords-row">
+        <div class="coords-brace">{</div>
+        <div class="coords-label left">координаты</div>
+        <div class="coords-value" id="coordsValue">55° 44' 30.0"</div>
+        <div class="coords-label right">карты</div>
+        <div class="coords-brace">}</div>
+      </div>
+    </section>
+
+
+    <section class="immersion-section" id="immersionSection" aria-label="Погружение">
+      <div class="immersion-sticky">
+        <svg class="immersion-svg immersion-stage" viewBox="0 0 1280 810" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="immersionTitle immersionDesc">
+          <title id="immersionTitle">Погружение</title>
+          <desc id="immersionDesc">Блок погружение со скролл-анимацией: синее поле с градиентными полосами поднимается вверх и удерживает прокрутку, пока не завершится.</desc>
+          <defs>
+            <linearGradient id="barsGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#FF3A00"/>
+              <stop offset="16%" stop-color="#FFD000"/>
+              <stop offset="34%" stop-color="#B9FF00"/>
+              <stop offset="52%" stop-color="#00FF63"/>
+              <stop offset="70%" stop-color="#27D8FF"/>
+              <stop offset="86%" stop-color="#4055FF"/>
+              <stop offset="100%" stop-color="#FF00F5"/>
+            </linearGradient>
+          </defs>
+
+          <text x="38" y="58" fill="#0009FF" font-size="28" font-family="Arial, Helvetica, sans-serif">(</text>
+          <g fill="#0009FF" font-size="28" font-family="Arial, Helvetica, sans-serif">
+            <text x="144" y="58">п</text>
+            <text x="280" y="58">о</text>
+            <text x="388" y="58">г</text>
+            <text x="492" y="58">р</text>
+            <text x="596" y="58">у</text>
+            <text x="708" y="58">ж</text>
+            <text x="814" y="58">е</text>
+            <text x="920" y="58">н</text>
+            <text x="1026" y="58">и</text>
+            <text x="1130" y="58">е</text>
+          </g>
+          <text x="1190" y="58" fill="#0009FF" font-size="28" font-family="Arial, Helvetica, sans-serif">)</text>
+
+          <g class="immersion-index-svg" fill="#0009FF">
+          <path d="M18.831 73.511L28.2968 52.364H26.4842L17.0184 73.511H12.789L22.2548 52.364H0.000120166L0.80572 48.4367H23.9667L32.929 28.3974H10.5736L11.3792 24.4701H34.7416L44.8116 1.91329H49.041L38.971 24.4701H40.7836L50.8536 1.91329H55.083L45.013 24.4701H66.8649L66.16 28.3974H43.2004L34.2381 48.4367H56.2914L55.5865 52.364H32.5262L23.0604 73.511H18.831ZM28.1961 48.4367H30.0087L38.971 28.3974H37.1584L28.1961 48.4367Z" transform="translate(48 105)"/>
+          <text class="immersion-index" x="122" y="180" fill="#0009FF" font-size="100.7" font-style="italic" font-weight="400" font-family="Arial, Helvetica, sans-serif">02</text>
+          </g>
+
+          <ellipse cx="730" cy="136" rx="498" ry="32" fill="none" stroke="#0009FF" stroke-width="2"/>
+          <ellipse cx="730" cy="190" rx="498" ry="32" fill="none" stroke="#0009FF" stroke-width="2"/>
+
+          <g fill="#0009FF" font-size="18" font-family="Arial, Helvetica, sans-serif">
+            <text x="505" y="134">(продолжай)</text>
+            <text x="855" y="134">(медленный)</text>
+            <text x="535" y="198">(вертикальный)</text>
+            <text x="820" y="198">(скролл)</text>
+          </g>
+
+          <g stroke="#0009FF" stroke-width="2" fill="none">
+            <line x1="710" y1="116" x2="710" y2="216"/>
+            <line x1="736" y1="116" x2="736" y2="216"/>
+            <line x1="762" y1="116" x2="762" y2="216"/>
+          </g>
+          <g fill="#0009FF">
+            <path d="M710 218 l-7 -8 h14 z"/>
+            <path d="M736 218 l-7 -8 h14 z"/>
+            <path d="M762 218 l-7 -8 h14 z"/>
+          </g>
+
+          <defs>
+            <linearGradient id="immBaseGrad0" x1="32.5042" y1="375" x2="32.5042" y2="-160.973" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immBaseGrad1" x1="32.4968" y1="529.675" x2="32.4968" y2="0" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immBaseGrad3" x1="32.5036" y1="110" x2="32.5036" y2="-347.527" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <mask id="immersionBaseMask" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="1" y="705" width="1279" height="88">
+              <rect x="1" y="705" width="1279" height="88" fill="#D9D9D9"/>
+            </mask>
+
+            <linearGradient id="immRiseGrad0" x1="32.5042" y1="375" x2="32.5042" y2="-160.973" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immRiseGrad1" x1="32.4968" y1="529.675" x2="32.4968" y2="0" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immRiseGrad3" x1="33.0258" y1="561.207" x2="33.0464" y2="0.0000117196" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immRiseGrad4" x1="32.0032" y1="327.312" x2="32.0032" y2="-71.8636" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immRiseGrad6" x1="32.5778" y1="525.436" x2="32.5778" y2="0" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immRiseGrad8" x1="32.5036" y1="110" x2="32.5036" y2="-347.527" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immRiseGrad9" x1="31.9756" y1="190.69" x2="31.9756" y2="-275.776" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+
+            <linearGradient id="immCompactGrad0" x1="32.5042" y1="1168" x2="32.5042" y2="632.027" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immCompactGrad1" x1="32.4968" y1="1373.675" x2="32.4968" y2="844" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immCompactGrad2" x1="33.0258" y1="1604.207" x2="33.0464" y2="1043.000012" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immCompactGrad3" x1="32.0032" y1="1230.312" x2="32.0032" y2="831.1364" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immCompactGrad4" x1="32.5778" y1="1707.436" x2="32.5778" y2="1182" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immCompactGrad5" x1="32.5036" y1="903" x2="32.5036" y2="445.473" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+            <linearGradient id="immCompactGrad6" x1="31.9756" y1="1093.69" x2="31.9756" y2="627.224" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF0000"/>
+              <stop offset="0.0673077" stop-color="#FF6A00"/>
+              <stop offset="0.158654" stop-color="#FFD000"/>
+              <stop offset="0.302885" stop-color="#A6FF00"/>
+              <stop offset="0.427885" stop-color="#00FF0D"/>
+              <stop offset="0.600962" stop-color="#00FBFF"/>
+              <stop offset="0.764423" stop-color="#3300FF"/>
+              <stop offset="1" stop-color="#D500FF"/>
+            </linearGradient>
+          </defs>
+
+          <rect x="0" y="266" width="1280" height="527" fill="#CCFF00"/>
+
+          <g fill="#D0D0D0" id="immersionEmptyBars">
+            <rect x="43" y="394" width="65" height="400"/>
+            <rect x="580" y="266" width="65" height="348"/>
+            <rect x="225" y="266" width="66" height="232"/>
+            <rect x="365" y="383" width="64" height="231"/>
+            <rect x="430" y="266" width="65" height="117"/>
+            <rect x="161" y="498" width="64" height="116"/>
+            <rect x="300" y="614" width="65" height="180"/>
+            <rect x="1160" y="266" width="64" height="348"/>
+            <rect x="805" y="266" width="65" height="232"/>
+            <rect x="943" y="383" width="66" height="231"/>
+            <rect x="1009" y="266" width="66" height="117"/>
+            <rect x="740" y="498" width="65" height="116"/>
+            <rect x="879" y="614" width="64" height="180"/>
+          </g>
+
+          <g id="immersionRise">
+            <rect x="0" y="793" width="1280" height="530" fill="#0009FF"/>
+            <rect width="65" height="375" transform="matrix(1 0 0 -1 43 1168)" fill="url(#immRiseGrad0)"/>
+            <rect width="65" height="479" transform="matrix(1 0 0 -1 588 1323)" fill="url(#immRiseGrad1)"/>
+            <rect width="65" height="479" transform="matrix(1 0 0 -1 1167 1323)" fill="url(#immRiseGrad1)"/>
+            <rect width="66" height="280" transform="matrix(1 0 0 -1 233 1323)" fill="url(#immRiseGrad3)"/>
+            <rect width="64" height="279" transform="matrix(1 0 0 -1 373 1182)" fill="url(#immRiseGrad4)"/>
+            <rect width="66" height="280" transform="matrix(1 0 0 -1 812 1323)" fill="url(#immRiseGrad3)"/>
+            <rect width="65" height="141" transform="matrix(1 0 0 -1 438 1323)" fill="url(#immRiseGrad6)"/>
+            <rect width="64" height="279" transform="matrix(1 0 0 -1 952 1182)" fill="url(#immRiseGrad4)"/>
+            <rect width="65" height="110" transform="matrix(1 0 0 -1 308 903)" fill="url(#immRiseGrad8)"/>
+            <rect width="64" height="140" transform="matrix(1 0 0 -1 169 1043)" fill="url(#immRiseGrad9)"/>
+            <rect width="65" height="141" transform="matrix(1 0 0 -1 1017 1323)" fill="url(#immRiseGrad6)"/>
+            <rect width="64" height="140" transform="matrix(1 0 0 -1 748 1043)" fill="url(#immRiseGrad9)"/>
+            <rect width="65" height="110" transform="matrix(1 0 0 -1 887 903)" fill="url(#immRiseGrad8)"/>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+
+    <section class="research-section" id="researchSection" aria-label="Исследование">
+      <div class="research-title" aria-hidden="true">
+        <span>(</span>
+        <span>и</span>
+        <span>с</span>
+        <span>с</span>
+        <span>л</span>
+        <span>е</span>
+        <span>д</span>
+        <span>о</span>
+        <span>в</span>
+        <span>а</span>
+        <span>н</span>
+        <span>и</span>
+        <span>е</span>
+        <span>)</span>
+      </div>
+
+      <div class="research-guide-wrap">
+        <div class="research-guide">
+          <div class="guide-label">(кликай)</div>
+          <div class="guide-arrow"></div>
+          <div class="guide-label center">(по)</div>
+          <div class="guide-arrow"></div>
+          <div class="guide-label center">(сталактитам)</div>
+          <div class="guide-arrow"></div>
+          <div class="guide-label center">(исследуй)</div>
+          <div class="guide-arrow"></div>
+          <div class="guide-label right">(спектр)</div>
+        </div>
+
+        <div class="guide-mobile research-guide-mobile">
+          <div class="guide-mobile-line">
+            <div class="guide-mobile-label">(кликай)</div>
+            <div class="guide-mobile-arrow"></div>
+            <div class="guide-mobile-label">(по)</div>
+            <div class="guide-mobile-arrow"></div>
+            <div class="guide-mobile-label">(сталактитам)</div>
+          </div>
+          <div class="guide-mobile-line">
+            <div class="guide-mobile-arrow"></div>
+            <div class="guide-mobile-label">(исследуй)</div>
+            <div class="guide-mobile-arrow"></div>
+            <div class="guide-mobile-label">(спектр)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="research-stage" id="researchStage">
+        <div class="research-index index-badge" aria-hidden="true"><span class="index-mark"><svg class="index-hash" viewBox="0 0 67 76" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.831 73.511L28.2968 52.364H26.4842L17.0184 73.511H12.789L22.2548 52.364H0.000120166L0.80572 48.4367H23.9667L32.929 28.3974H10.5736L11.3792 24.4701H34.7416L44.8116 1.91329H49.041L38.971 24.4701H40.7836L50.8536 1.91329H55.083L45.013 24.4701H66.8649L66.16 28.3974H43.2004L34.2381 48.4367H56.2914L55.5865 52.364H32.5262L23.0604 73.511H18.831ZM28.1961 48.4367H30.0087L38.971 28.3974H37.1584L28.1961 48.4367Z" fill="currentColor"/></svg></span><span class="index-digits">03</span></div>
+        <div class="stalactite s1" aria-label="Разбить левый синий сталактит" role="button" tabindex="0"></div>
+        <div class="stalactite s2" aria-label="Разбить центральный синий сталактит" role="button" tabindex="0"></div>
+        <div class="stalactite s3" aria-label="Разбить правый синий сталактит" role="button" tabindex="0"></div>
+
+        <div class="research-shatter" id="researchShatter" aria-hidden="true">
+          <svg class="research-shatter-svg" id="researchShatterSvg" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="researchShardS1A" x1="43.6413" y1="-24.6913" x2="320.756" y2="761.6" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/><stop offset="0.0673077" stop-color="#FF6A00"/><stop offset="0.158654" stop-color="#FFD000"/><stop offset="0.302885" stop-color="#A6FF00"/><stop offset="0.427885" stop-color="#00FF0D"/><stop offset="0.600962" stop-color="#00FBFF"/><stop offset="0.764423" stop-color="#3300FF"/><stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+              <linearGradient id="researchShardS1B" x1="81.2628" y1="-95.4024" x2="205.267" y2="444.097" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/><stop offset="0.0673077" stop-color="#FF6A00"/><stop offset="0.158654" stop-color="#FFD000"/><stop offset="0.302885" stop-color="#A6FF00"/><stop offset="0.427885" stop-color="#00FF0D"/><stop offset="0.600962" stop-color="#00FBFF"/><stop offset="0.764423" stop-color="#3300FF"/><stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+              <linearGradient id="researchShardS1C" x1="469.761" y1="166.597" x2="135.259" y2="-25.9001" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/><stop offset="0.0673077" stop-color="#FF6A00"/><stop offset="0.158654" stop-color="#FFD000"/><stop offset="0.302885" stop-color="#A6FF00"/><stop offset="0.427885" stop-color="#00FF0D"/><stop offset="0.600962" stop-color="#00FBFF"/><stop offset="0.764423" stop-color="#3300FF"/><stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+
+              <linearGradient id="researchShardS2A" x1="286.265" y1="50.6695" x2="-533.24" y2="-102.488" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/><stop offset="0.0673077" stop-color="#FF6A00"/><stop offset="0.158654" stop-color="#FFD000"/><stop offset="0.302885" stop-color="#A6FF00"/><stop offset="0.427885" stop-color="#00FF0D"/><stop offset="0.600962" stop-color="#00FBFF"/><stop offset="0.764423" stop-color="#3300FF"/><stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+              <linearGradient id="researchShardS2B" x1="328.692" y1="118.606" x2="-200.53" y2="-43.7524" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/><stop offset="0.0673077" stop-color="#FF6A00"/><stop offset="0.158654" stop-color="#FFD000"/><stop offset="0.302885" stop-color="#A6FF00"/><stop offset="0.427885" stop-color="#00FF0D"/><stop offset="0.600962" stop-color="#00FBFF"/><stop offset="0.764423" stop-color="#3300FF"/><stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+              <linearGradient id="researchShardS2C" x1="-92.4555" y1="324.056" x2="241.503" y2="130.617" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/><stop offset="0.0673077" stop-color="#FF6A00"/><stop offset="0.158654" stop-color="#FFD000"/><stop offset="0.302885" stop-color="#A6FF00"/><stop offset="0.427885" stop-color="#00FF0D"/><stop offset="0.600962" stop-color="#00FBFF"/><stop offset="0.764423" stop-color="#3300FF"/><stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+
+              <linearGradient id="researchShardS3A" x1="100.056" y1="223.617" x2="642.447" y2="-409.517" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/><stop offset="0.0673077" stop-color="#FF6A00"/><stop offset="0.158654" stop-color="#FFD000"/><stop offset="0.302885" stop-color="#A6FF00"/><stop offset="0.427885" stop-color="#00FF0D"/><stop offset="0.600962" stop-color="#00FBFF"/><stop offset="0.764423" stop-color="#3300FF"/><stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+              <linearGradient id="researchShardS3B" x1="20.0077" y1="226.391" x2="425.225" y2="-150.749" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/><stop offset="0.0673077" stop-color="#FF6A00"/><stop offset="0.158654" stop-color="#FFD000"/><stop offset="0.302885" stop-color="#A6FF00"/><stop offset="0.427885" stop-color="#00FF0D"/><stop offset="0.600962" stop-color="#00FBFF"/><stop offset="0.764423" stop-color="#3300FF"/><stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+              <linearGradient id="researchShardS3C" x1="52.6573" y1="-241.058" x2="53.2006" y2="144.877" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/><stop offset="0.0673077" stop-color="#FF6A00"/><stop offset="0.158654" stop-color="#FFD000"/><stop offset="0.302885" stop-color="#A6FF00"/><stop offset="0.427885" stop-color="#00FF0D"/><stop offset="0.600962" stop-color="#00FBFF"/><stop offset="0.764423" stop-color="#3300FF"/><stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <div class="stalagmite g1" aria-hidden="true">
+          <svg viewBox="0 0 208 271" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M104 0L208 271H0L104 0Z" fill="url(#researchLowerGradLeft)"/>
+            <defs>
+              <linearGradient id="researchLowerGradLeft" x1="137" y1="-22.584" x2="155.505" y2="1020.59" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/>
+                <stop offset="0.0687506" stop-color="#FF6A00"/>
+                <stop offset="0.20533" stop-color="#FFD000"/>
+                <stop offset="0.307227" stop-color="#A6FF00"/>
+                <stop offset="0.427885" stop-color="#00FF0D"/>
+                <stop offset="0.600962" stop-color="#00FBFF"/>
+                <stop offset="0.764423" stop-color="#3300FF"/>
+                <stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="stalagmite g2" aria-hidden="true">
+          <svg viewBox="0 0 150 196" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M75 0L150 196H0L75 0Z" fill="url(#researchLowerGradMid)"/>
+            <defs>
+              <linearGradient id="researchLowerGradMid" x1="74.996" y1="468.138" x2="74.462" y2="-283.446" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/>
+                <stop offset="0.129522" stop-color="#FF6A00"/>
+                <stop offset="0.24693" stop-color="#FFD000"/>
+                <stop offset="0.396726" stop-color="#A6FF00"/>
+                <stop offset="0.546522" stop-color="#00FF0D"/>
+                <stop offset="0.692269" stop-color="#00FBFF"/>
+                <stop offset="0.850162" stop-color="#3300FF"/>
+                <stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="stalagmite g3" aria-hidden="true">
+          <svg viewBox="0 0 290 407" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <path d="M145 0L290 407H0L145 0Z" fill="url(#researchLowerGradRight)"/>
+            <defs>
+              <linearGradient id="researchLowerGradRight" x1="59.512" y1="981.827" x2="73.218" y2="58.5039" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/>
+                <stop offset="0.0673077" stop-color="#FF6A00"/>
+                <stop offset="0.158654" stop-color="#FFD000"/>
+                <stop offset="0.302885" stop-color="#A6FF00"/>
+                <stop offset="0.427885" stop-color="#00FF0D"/>
+                <stop offset="0.600962" stop-color="#00FBFF"/>
+                <stop offset="0.764423" stop-color="#3300FF"/>
+                <stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="research-base" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section class="result-section" id="resultSection" aria-label="Результат">
+      <div class="result-inner">
+        <div class="result-title" aria-hidden="true">
+          <span>(</span>
+          <span>р</span>
+          <span>е</span>
+          <span>з</span>
+          <span>у</span>
+          <span>л</span>
+          <span>ь</span>
+          <span>т</span>
+          <span>а</span>
+          <span>т</span>
+          <span>)</span>
+        </div>
+
+        <div class="result-guide">
+          <div class="guide-label">(кликай)</div>
+          <div class="guide-arrow"></div>
+          <div class="guide-label center">(чтобы узнать больше)</div>
+          <div class="guide-arrow"></div>
+          <div class="guide-label center">(зажми)</div>
+          <div class="guide-arrow"></div>
+          <div class="guide-label right">(чтобы покрутить)</div>
+        </div>
+
+        <div class="guide-mobile result-guide-mobile">
+          <div class="guide-mobile-line">
+            <div class="guide-mobile-label">(кликай)</div>
+            <div class="guide-mobile-arrow"></div>
+            <div class="guide-mobile-label">(чтобы узнать больше)</div>
+          </div>
+          <div class="guide-mobile-line">
+            <div class="guide-mobile-label">(зажми)</div>
+            <div class="guide-mobile-arrow"></div>
+            <div class="guide-mobile-label">(чтобы покрутить)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-panel">
+        <div class="result-index index-badge" aria-hidden="true"><span class="index-mark"><svg class="index-hash" viewBox="0 0 67 76" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M18.831 73.511L28.2968 52.364H26.4842L17.0184 73.511H12.789L22.2548 52.364H0.000120166L0.80572 48.4367H23.9667L32.929 28.3974H10.5736L11.3792 24.4701H34.7416L44.8116 1.91329H49.041L38.971 24.4701H40.7836L50.8536 1.91329H55.083L45.013 24.4701H66.8649L66.16 28.3974H43.2004L34.2381 48.4367H56.2914L55.5865 52.364H32.5262L23.0604 73.511H18.831ZM28.1961 48.4367H30.0087L38.971 28.3974H37.1584L28.1961 48.4367Z" fill="currentColor"/></svg></span><span class="index-digits">04</span></div>
+
+        <div class="result-visual" id="resultVisual" role="button" tabindex="0" aria-label="Зажмите и ведите по призме, чтобы крутить её. Короткий тап по призме переключает состояния результата.">
+                    <svg class="result-svg" viewBox="0 0 930 657" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="result1PrismGrad" x1="-116.738" y1="327.405" x2="504.759" y2="281.864" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/>
+                <stop offset="0.0673077" stop-color="#FF6A00"/>
+                <stop offset="0.158654" stop-color="#FFD000"/>
+                <stop offset="0.302885" stop-color="#A6FF00"/>
+                <stop offset="0.427885" stop-color="#00FF0D"/>
+                <stop offset="0.600962" stop-color="#00FBFF"/>
+                <stop offset="0.764423" stop-color="#3300FF"/>
+                <stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+              <linearGradient id="result1RayTop" x1="643.76" y1="198.407" x2="643.76" y2="1.40697" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D500FF"/>
+                <stop offset="0.235577" stop-color="#3300FF"/>
+                <stop offset="0.399038" stop-color="#00FBFF"/>
+                <stop offset="0.572115" stop-color="#00FF0D"/>
+                <stop offset="0.697115" stop-color="#A6FF00"/>
+                <stop offset="0.841346" stop-color="#FFD000"/>
+                <stop offset="0.932692" stop-color="#FF6A00"/>
+                <stop offset="1" stop-color="#FF0000"/>
+              </linearGradient>
+              <linearGradient id="result1RayLeft" x1="21.7648" y1="457.407" x2="21.7648" y2="654.407" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D500FF"/>
+                <stop offset="0.235577" stop-color="#3300FF"/>
+                <stop offset="0.399038" stop-color="#00FBFF"/>
+                <stop offset="0.572115" stop-color="#00FF0D"/>
+                <stop offset="0.697115" stop-color="#A6FF00"/>
+                <stop offset="0.841346" stop-color="#FFD000"/>
+                <stop offset="0.932692" stop-color="#FF6A00"/>
+                <stop offset="1" stop-color="#FF0000"/>
+              </linearGradient>
+              <linearGradient id="result1RayRight" x1="697.764" y1="511.907" x2="694.266" y2="808.907" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D500FF"/>
+                <stop offset="0.235577" stop-color="#3300FF"/>
+                <stop offset="0.399038" stop-color="#00FBFF"/>
+                <stop offset="0.572115" stop-color="#00FF0D"/>
+                <stop offset="0.697115" stop-color="#A6FF00"/>
+                <stop offset="0.841346" stop-color="#FFD000"/>
+                <stop offset="0.932692" stop-color="#FF6A00"/>
+                <stop offset="1" stop-color="#FF0000"/>
+              </linearGradient>
+
+              <linearGradient id="result2RayTop" x1="643.852" y1="198.343" x2="643.852" y2="1.34305" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D500FF"/>
+                <stop offset="0.235577" stop-color="#3300FF"/>
+                <stop offset="0.399038" stop-color="#00FBFF"/>
+                <stop offset="0.572115" stop-color="#00FF0D"/>
+                <stop offset="0.697115" stop-color="#A6FF00"/>
+                <stop offset="0.841346" stop-color="#FFD000"/>
+                <stop offset="0.932692" stop-color="#FF6A00"/>
+                <stop offset="1" stop-color="#FF0000"/>
+              </linearGradient>
+              <linearGradient id="result2RayLeft" x1="21.8342" y1="457.343" x2="21.8342" y2="654.343" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D500FF"/>
+                <stop offset="0.235577" stop-color="#3300FF"/>
+                <stop offset="0.399038" stop-color="#00FBFF"/>
+                <stop offset="0.572115" stop-color="#00FF0D"/>
+                <stop offset="0.697115" stop-color="#A6FF00"/>
+                <stop offset="0.841346" stop-color="#FFD000"/>
+                <stop offset="0.932692" stop-color="#FF6A00"/>
+                <stop offset="1" stop-color="#FF0000"/>
+              </linearGradient>
+              <linearGradient id="result2RayRight" x1="545.754" y1="404.871" x2="694.262" y2="808.872" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D500FF"/>
+                <stop offset="0.235577" stop-color="#3300FF"/>
+                <stop offset="0.399038" stop-color="#00FBFF"/>
+                <stop offset="0.572115" stop-color="#00FF0D"/>
+                <stop offset="0.697115" stop-color="#A6FF00"/>
+                <stop offset="0.841346" stop-color="#FFD000"/>
+                <stop offset="0.932692" stop-color="#FF6A00"/>
+                <stop offset="1" stop-color="#FF0000"/>
+              </linearGradient>
+              <linearGradient id="result2PrismGrad" x1="-7.67014" y1="106.345" x2="576.328" y2="798.846" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/>
+                <stop offset="0.0673077" stop-color="#FF6A00"/>
+                <stop offset="0.158654" stop-color="#FFD000"/>
+                <stop offset="0.302885" stop-color="#A6FF00"/>
+                <stop offset="0.427885" stop-color="#00FF0D"/>
+                <stop offset="0.600962" stop-color="#00FBFF"/>
+                <stop offset="0.764423" stop-color="#3300FF"/>
+                <stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+
+              <linearGradient id="result3RayTop" x1="643.277" y1="198.206" x2="643.277" y2="1.20576" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D500FF"/>
+                <stop offset="0.235577" stop-color="#3300FF"/>
+                <stop offset="0.399038" stop-color="#00FBFF"/>
+                <stop offset="0.572115" stop-color="#00FF0D"/>
+                <stop offset="0.697115" stop-color="#A6FF00"/>
+                <stop offset="0.841346" stop-color="#FFD000"/>
+                <stop offset="0.932692" stop-color="#FF6A00"/>
+                <stop offset="1" stop-color="#FF0000"/>
+              </linearGradient>
+              <linearGradient id="result3RayLeft" x1="21.2622" y1="457.206" x2="21.2622" y2="654.206" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D500FF"/>
+                <stop offset="0.235577" stop-color="#3300FF"/>
+                <stop offset="0.399038" stop-color="#00FBFF"/>
+                <stop offset="0.572115" stop-color="#00FF0D"/>
+                <stop offset="0.697115" stop-color="#A6FF00"/>
+                <stop offset="0.841346" stop-color="#FFD000"/>
+                <stop offset="0.932692" stop-color="#FF6A00"/>
+                <stop offset="1" stop-color="#FF0000"/>
+              </linearGradient>
+              <linearGradient id="result3RayRight" x1="545.258" y1="404.706" x2="693.765" y2="808.706" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#D500FF"/>
+                <stop offset="0.235577" stop-color="#3300FF"/>
+                <stop offset="0.399038" stop-color="#00FBFF"/>
+                <stop offset="0.572115" stop-color="#00FF0D"/>
+                <stop offset="0.697115" stop-color="#A6FF00"/>
+                <stop offset="0.841346" stop-color="#FFD000"/>
+                <stop offset="0.932692" stop-color="#FF6A00"/>
+                <stop offset="1" stop-color="#FF0000"/>
+              </linearGradient>
+              <linearGradient id="result3PrismGrad" x1="216.456" y1="339.218" x2="862.566" y2="183.412" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF0000"/>
+                <stop offset="0.0673077" stop-color="#FF6A00"/>
+                <stop offset="0.158654" stop-color="#FFD000"/>
+                <stop offset="0.302885" stop-color="#A6FF00"/>
+                <stop offset="0.427885" stop-color="#00FF0D"/>
+                <stop offset="0.600962" stop-color="#00FBFF"/>
+                <stop offset="0.764423" stop-color="#3300FF"/>
+                <stop offset="1" stop-color="#D500FF"/>
+              </linearGradient>
+            </defs>
+
+            <g class="result-brackets">
+              <path class="result-bracket" d="M176 154 H132 V226" />
+              <path class="result-bracket" d="M545 154 H589 V226" />
+              <path class="result-bracket" d="M176 510 H132 V438" />
+              <path class="result-bracket" d="M545 510 H589 V438" />
+            </g>
+
+            <g class="result-state is-active" data-result-state="0">
+              <path class="result-ray" stroke="url(#result1RayTop)" d="M470 -120L395.762 198.407L1385 -120" />
+              <path class="result-ray" stroke="url(#result1RayLeft)" d="M980 1560L183.762 296.907L-1500 1045" />
+              <path class="result-ray" stroke="url(#result1RayRight)" d="M-260 1490L533.262 451.907L2160 1490" />
+              <path class="result-prism" fill="url(#result1PrismGrad)" d="M391.142 202.785L533.762 451.785L182.762 296.267L391.142 202.785Z" />
+            </g>
+
+            <g class="result-state" data-result-state="1">
+              <path class="result-ray" stroke="url(#result2RayTop)" d="M180 -120L329.832 189.843L1160 -120" />
+              <path class="result-ray" stroke="url(#result2RayLeft)" d="M-980 1620L204.832 259.843L-1560 1005" />
+              <path class="result-ray" stroke="url(#result2RayRight)" d="M-180 1510L506.332 437.343L1920 1510" />
+              <path class="result-prism" fill="url(#result2PrismGrad)" d="M328.622 188.896L507.387 437.41L203.881 259.119L328.622 188.896Z" />
+            </g>
+
+            <g class="result-state" data-result-state="2">
+              <path class="result-ray" stroke="url(#result3RayTop)" d="M120 -120L499.757 186.206L1160 -120" />
+              <path class="result-ray" stroke="url(#result3RayLeft)" d="M-620 1580L216.257 311.705L-1510 -430" />
+              <path class="result-ray" stroke="url(#result3RayRight)" d="M-120 1520L322.757 494.706L2200 1520" />
+              <path class="result-prism" fill="url(#result3PrismGrad)" d="M500.452 184.206L323.534 494.206L216.452 312.401L500.452 184.206Z" />
+            </g>
+          </svg>
+        </div>
+
+        <div class="result-copy" id="resultCopy">
+          <div class="result-copy-item is-active" data-result-copy="0">
+            <div class="result-copy-title">(1)
+Поверхность</div>
+            <div class="result-copy-body">фрагмент поверхности,
+на котором считывается
+первый след погружения</div>
+          </div>
+          <div class="result-copy-item" data-result-copy="1">
+            <div class="result-copy-title">(2)
+Слой</div>
+            <div class="result-copy-body">более глубокий слой,
+где форма начинает смещаться
+и искажать координаты.</div>
+          </div>
+          <div class="result-copy-item" data-result-copy="2">
+            <div class="result-copy-title">(3)
+Глубина</div>
+            <div class="result-copy-body">крайняя точка маршрута,
+концентрат данных пещеры,
+готовый к дальнейшему
+исследованию.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+
+    <footer class="site-footer" aria-label="Подвал">
+      <div class="site-footer-inner">
+        <svg class="footer-brand-svg" width="178" height="71" viewBox="0 0 178 71" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="HSE ART AND DESIGN SCHOOL" role="img">
+<path d="M8.73633 19.4385H5.19349V34.4279H0V0.320923H5.19349V13.9878H8.73633V0.320923H13.9298V34.468H8.73633V19.4385Z" fill="#0009FF"/>
+<path d="M22.8646 34.8284H21.8581C17.7113 34.8284 15.4971 32.584 15.4971 28.3757V21.5223H20.6503V27.494C20.6503 29.0571 21.1737 29.8987 22.3412 29.8987C23.5892 29.8987 24.0321 29.0571 24.0321 26.973V26.2115C24.0321 23.7667 23.7905 22.925 21.8983 20.4802L18.6373 16.1918C16.423 13.3462 15.7789 11.1419 15.7789 7.73519V6.65306C15.7789 2.12417 18.0737 0 22.1802 0H23.1464C27.4139 0 29.1048 1.8837 29.1048 5.93165V11.5427H24.0724V6.61299C24.0724 5.4507 23.8308 4.60905 22.5828 4.60905C21.3347 4.60905 21.0529 5.37055 21.0529 7.01377V7.65503C21.0529 9.57881 21.4152 10.6209 23.1867 12.9053L26.4879 17.1537C28.823 20.1997 29.5879 21.923 29.5879 25.7706V26.8527C29.5879 31.8626 27.4139 34.8284 22.8646 34.8284Z" fill="#0009FF"/>
+<path d="M42.9169 0.320923V5.29068H36.2741V14.2282H41.4675V19.3984H36.2741V29.2577H43.1987V34.4279H31.0806V0.320923H42.9169Z" fill="#0009FF"/>
+<path d="M57.2483 28.0152H53.4639L52.7795 34.4278H48.1094L52.2964 0.280762H58.4561L62.9249 34.4278H57.8925L57.2483 28.0152ZM56.6847 22.9252L55.3158 10.3004L53.9873 22.9252H56.6847Z" fill="#0009FF"/>
+<path d="M69.0028 34.468H63.8093V0.320923H72.2638C75.7262 0.320923 77.4573 1.80383 77.4573 5.61131V11.6632C77.4573 14.5088 76.1288 15.5909 75.2028 16.0318C76.3703 16.5528 77.4573 17.4746 77.4573 19.7591V31.7426C77.4573 33.1053 77.7391 33.7466 77.9807 34.2676V34.508H72.8275C72.5859 34.1473 72.3041 33.5462 72.3041 31.7025V21.3622C72.3041 19.8392 72.0223 19.198 70.3716 19.198H69.0431L69.0028 34.468ZM69.0028 14.3485H70.3716C71.821 14.3485 72.2638 13.4267 72.2638 11.9037V7.1343C72.2638 5.65139 71.9418 4.92997 70.3716 4.92997H69.0028V14.3485Z" fill="#0009FF"/>
+<path d="M87.9636 5.2506V34.4279H82.8104V5.2506H78.4221V0.320923H92.3519V5.29068L87.9636 5.2506Z" fill="#0009FF"/>
+<path d="M106.281 28.0152H102.497L101.812 34.4278H97.1421L101.329 0.280762H107.489L111.958 34.4278H106.925L106.281 28.0152ZM105.717 22.9252L104.349 10.3004L103.02 22.9252H105.717Z" fill="#0009FF"/>
+<path d="M117.518 0.320923L121.987 18.6369V0.320923H126.737V34.468H122.51L117.518 14.8294V34.468H112.808V0.320923H117.518Z" fill="#0009FF"/>
+<path d="M128.667 0.320923H136.679C141.147 0.320923 142.516 2.84588 142.516 6.89383V27.6947C142.516 31.8628 140.946 34.468 136.679 34.468H128.707V0.320923H128.667ZM133.901 29.4982H135.149C136.719 29.4982 137.162 28.6566 137.162 26.853V7.61524C137.162 5.65139 136.638 4.97005 135.35 4.97005H133.86V29.4982H133.901Z" fill="#0009FF"/>
+<path d="M0 36.2311H7.9714C12.4402 36.2311 13.809 38.756 13.809 42.804V63.6048C13.809 67.773 12.2389 70.3781 7.9714 70.3781H0V36.2311ZM5.19349 65.4484H6.44153C8.01166 65.4484 8.45451 64.6068 8.45451 62.8032V43.5655C8.45451 41.6016 7.93114 40.9203 6.64283 40.9203H5.15323V65.4484H5.19349Z" fill="#0009FF"/>
+<path d="M27.5333 36.2311V41.2008H20.8905V50.1384H26.084V55.3085H20.8905V65.1679H27.8151V70.338H15.6567V36.2311H27.5333Z" fill="#0009FF"/>
+<path d="M36.1097 70.7391H35.1032C30.9565 70.7391 28.7422 68.4947 28.7422 64.2864V57.4329H33.8954V63.4047C33.8954 64.9677 34.4188 65.8094 35.5863 65.8094C36.8344 65.8094 37.2772 64.9677 37.2772 62.8836V62.1222C37.2772 59.6774 37.0357 58.8357 35.1435 56.3909L31.8422 52.1826C29.6279 49.337 28.9837 47.1327 28.9837 43.726V42.6439C28.9837 38.115 31.2785 35.9908 35.385 35.9908H36.3512C40.659 35.9908 42.3097 37.8745 42.3097 41.9225V47.5335H37.2772V42.6038C37.2772 41.4415 37.0357 40.5999 35.7876 40.5999C34.5396 40.5999 34.2577 41.3614 34.2577 43.0046V43.6459C34.2577 45.5697 34.6201 46.6117 36.3915 48.8962L39.6928 53.1445C42.0278 56.1905 42.7928 57.9139 42.7928 61.7614V62.8436C42.833 67.7732 40.659 70.7391 36.1097 70.7391Z" fill="#0009FF"/>
+<path d="M49.5192 70.3781H44.3257V36.2311H49.5192V70.3781Z" fill="#0009FF"/>
+<path d="M56.2813 70.8596C53.2215 70.8596 51.2891 68.1343 51.2891 64.6074V43.2454C51.2891 39.4379 52.7787 35.911 57.6903 35.911H58.6968C64.2929 35.911 64.9371 39.5181 64.9371 43.566V47.0529H59.8644V43.2053C59.8644 41.6823 59.502 40.8808 58.2137 40.8808C57.1267 40.8808 56.6033 41.7224 56.6033 43.2053V63.1645C56.6033 64.7677 57.2475 65.6093 58.2942 65.6093C59.6228 65.6093 60.2267 64.6875 60.2267 63.405V54.8682H57.8916V49.6179H65.1786V70.3787H62.2397C62.1994 70.1783 61.7968 68.495 61.354 67.0121C60.9916 68.1744 59.2202 70.8196 56.6033 70.8196H56.2813V70.8596Z" fill="#0009FF"/>
+<path d="M71.6994 36.2311L76.1682 54.547V36.2311H80.9188V70.3781H76.6916L71.6994 50.7396V70.3781H66.989V36.2311H71.6994Z" fill="#0009FF"/>
+<path d="M94.5262 70.7391H93.5197C89.373 70.7391 87.1587 68.4947 87.1587 64.2864V57.4329H92.3119V63.4047C92.3119 64.9677 92.8353 65.8094 94.0028 65.8094C95.2509 65.8094 95.6937 64.9677 95.6937 62.8836V62.1222C95.6937 59.6774 95.4522 58.8357 93.56 56.3909L90.2587 52.1826C88.0444 49.337 87.4003 47.1327 87.4003 43.726V42.6439C87.4003 38.115 89.695 35.9908 93.8015 35.9908H94.7677C99.0353 35.9908 100.726 37.8745 100.726 41.9225V47.5335H95.6937V42.6038C95.6937 41.4415 95.4522 40.5999 94.2041 40.5999C92.9561 40.5999 92.6743 41.3614 92.6743 43.0046V43.6459C92.6743 45.5697 93.0366 46.6117 94.808 48.8962L98.1093 53.1445C100.444 56.1905 101.209 57.9139 101.209 61.7614V62.8436C101.25 67.7732 99.0755 70.7391 94.5262 70.7391Z" fill="#0009FF"/>
+<path d="M111.235 63.4457V55.5101H116.348V63.4056C116.348 67.0929 115.141 70.7801 110.108 70.7801H108.941C103.667 70.7801 102.539 67.0127 102.539 63.566V42.725C102.539 39.2382 104.069 35.8716 108.78 35.8716H109.987C115.704 35.8716 116.348 39.639 116.348 42.9655V49.0575H111.235V43.0457C111.235 41.5628 110.793 40.8013 109.464 40.8013C108.176 40.8013 107.854 41.5227 107.854 43.0457V63.3255C107.854 64.8485 108.377 65.6501 109.504 65.6501C110.793 65.7703 111.235 64.8485 111.235 63.4457Z" fill="#0009FF"/>
+<path d="M126.777 55.3887H123.234V70.3781H118.041V36.2311H123.234V49.8979H126.777V36.2311H131.971V70.3781H126.777V55.3887Z" fill="#0009FF"/>
+<path d="M148.031 62.7637C148.031 67.5331 146.421 70.7795 141.389 70.7795H140.503C135.511 70.7795 133.78 67.5331 133.78 62.7637V43.7664C133.78 39.0371 135.591 35.911 140.463 35.911H141.348C146.421 35.911 148.031 39.0371 148.031 43.7264V62.7637ZM142.717 43.4859C142.717 41.6823 142.113 40.8808 140.905 40.8808C139.577 40.8808 139.054 41.7625 139.054 43.4859V63.1244C139.054 64.6074 139.456 65.7296 140.946 65.7296C142.315 65.7296 142.717 64.5673 142.717 63.1244V43.4859Z" fill="#0009FF"/>
+<path d="M163.934 62.7637C163.934 67.5331 162.324 70.7795 157.291 70.7795H156.406C151.414 70.7795 149.682 67.5331 149.682 62.7637V43.7664C149.682 39.0371 151.494 35.911 156.365 35.911H157.251C162.324 35.911 163.934 39.0371 163.934 43.7264V62.7637ZM158.62 43.4859C158.62 41.6823 158.016 40.8808 156.808 40.8808C155.48 40.8808 154.956 41.7625 154.956 43.4859V63.1244C154.956 64.6074 155.359 65.7296 156.849 65.7296C158.217 65.7296 158.62 64.5673 158.62 63.1244V43.4859Z" fill="#0009FF"/>
+<path d="M170.943 36.2311V65.0877H177.304V70.3781H165.749V36.2311H170.943Z" fill="#0009FF"/>
+</svg>
+
+        <div class="footer-credits">
+          <div>Катя Умнова<br><span class="footer-role">(куратор)</span></div>
+          <div>Ангелина Раковская<br><span class="footer-role">(студент)</span></div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <canvas id="sampler" width="1000" height="1"></canvas>
+
+    <script src="./js/index.js"></script>
+</body>
+</html>
